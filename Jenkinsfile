@@ -10,18 +10,7 @@ pipeline {
         githubPush()
     }
 
-    options {
-        timestamps()
-    }
-
     stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/spring-projects/spring-petclinic.git'
-            }
-        }
 
         stage('Compile') {
             steps {
@@ -30,23 +19,13 @@ pipeline {
         }
 
         stage('Unit Tests') {
-    steps {
-        bat 'mvn test'
-    }
-    post {
-        always {
-            junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
-        }
-    }
-}
-
-        stage('Integration Tests') {
             steps {
-                bat 'mvn verify -Pintegration-tests'
+                bat 'mvn test'
             }
             post {
                 always {
-                    junit '**/target/failsafe-reports/*.xml'
+                    junit allowEmptyResults: true,
+                          testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
@@ -55,15 +34,6 @@ pipeline {
             steps {
                 bat 'mvn package -DskipTests'
             }
-        }
-    }
-
-    post {
-        success {
-            echo '✅ Maven CI successful'
-        }
-        failure {
-            echo '❌ Tests failed – check reports'
         }
     }
 }
