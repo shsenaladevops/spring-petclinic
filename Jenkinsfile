@@ -25,13 +25,13 @@ pipeline {
 
         stage('Compile') {
             steps {
-                sh 'mvn clean compile'
+                bat 'mvn clean compile'
             }
         }
 
         stage('Unit Tests') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'
             }
             post {
                 always {
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Integration Tests') {
             steps {
-                sh 'mvn verify -Pintegration-tests'
+                bat 'mvn verify -Pintegration-tests'
             }
             post {
                 always {
@@ -53,7 +53,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                sh 'mvn package -DskipTests'
+                bat 'mvn package -DskipTests'
             }
         }
     }
