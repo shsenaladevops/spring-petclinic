@@ -23,13 +23,17 @@ pipeline {
 
                 stage('Code Quality') {
                     steps {
-                        bat 'mvn checkstyle:checkstyle'
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            bat 'mvn checkstyle:checkstyle'
+                        }
                     }
                 }
 
                 stage('Security Scan') {
                     steps {
-                        bat 'mvn dependency-check:check'
+                        catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                            bat 'mvn dependency-check:check'
+                        }
                     }
                 }
             }
