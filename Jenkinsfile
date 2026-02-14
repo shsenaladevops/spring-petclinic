@@ -18,9 +18,28 @@ pipeline {
             }
         }
 
+        stage('Parallel Checks') {
+            parallel {
+
+                stage('Code Quality') {
+                    steps {
+                        bat 'mvn checkstyle:checkstyle'
+                    }
+                }
+
+                stage('Security Scan') {
+                    steps {
+                        bat 'mvn dependency-check:check'
+                    }
+                }
+            }
+        }
+
         stage('Unit Tests') {
             steps {
-                bat 'mvn test'
+                catchError(buildResult: 'UNSTABLE', stageResult: 'FAILURE') {
+                    bat 'mvn test'
+                }
             }
             post {
                 always {
